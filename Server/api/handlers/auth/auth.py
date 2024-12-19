@@ -1,6 +1,6 @@
 from flask import jsonify, request, current_app
 from extensions import profile, student, instructor, bcrypt, jwt_manager, current_user
-from api.handlers.utils.auth_utils import token_required
+from api.handlers.utils.utils import token_required
 
 def home():
     return jsonify({'message': 'Welcome to Google ClassRoom'})
