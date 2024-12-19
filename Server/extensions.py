@@ -3,11 +3,13 @@ from flask_cors import CORS
 from config import Config
 from pymongo import MongoClient
 from datetime import datetime, timedelta, timezone
+from contextvars import ContextVar
 import jwt
 
 bcrypt = Bcrypt()
 cors = CORS()
 
+current_user = ContextVar('current_user')
 class JWTManager:
     def __init__(self, secret_key, algorithm='HS256'):
         self.secret_key = secret_key
@@ -32,3 +34,4 @@ mongo_db = mongo_client['google_classroom']
 profile = mongo_db['profile']
 student = mongo_db['student']
 instructor = mongo_db['instructor']
+course = mongo_db['course']
