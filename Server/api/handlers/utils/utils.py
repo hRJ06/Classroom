@@ -39,7 +39,7 @@ def role_student(f):
         return f(*args, **kwargs)
     return decorated
 
-def upload_image_to_cloudinary(file):
+def upload_file_to_cloudinary(file):
     try:
         upload_data = cloudinary.uploader.upload(file, folder="Classroom/assignment-files")
         return upload_data['secure_url']
