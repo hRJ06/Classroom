@@ -1,6 +1,6 @@
 from flask import jsonify, request, current_app
 from api.handlers.utils.utils import token_required, role_instructor, role_student, upload_file_to_cloudinary
-from extensions import course, current_user, profile, announcement, mongo_client
+from extensions import course, current_user, profile, mongo_client
 from bson import ObjectId
 
 @token_required
@@ -158,5 +158,65 @@ def unenroll_course(course_id):
     finally:
         session.end_session()
 
+@token_required
+def archive_course(course_id):
+    session = mongo_client.start_session()
+    try:
+        with session.start_transaction():
+            user_data = current_user.get()
+            user = profile.find_one({'email': user_data['email']}, session=session)
+            course_id = ObjectId(course_id)
+            if course_id in user.get('archived_courses', []):
+                return jsonify({'message': 'Course already archived'}), 400
+            if course_id not in user['courses']:
+                return jsonify({'message': 'You are not authorized to archive this course'}), 401
+            profile.update_one(
+                {'email': user_data['email']}, 
+                {
+                    '$pull': {
+                        'courses': course_id
+                    },
+                    '$addToSet': {
+                        'archived_courses': course_id
+                    }
+                },
+                session=session
+            )
+            return jsonify({'message': 'Course archived successfully'}), 200
+    except Exception as e:
+        current_app.logger.error("Error during archiving course: %s", e)
+        return jsonify({'message': 'Internal Server Error'}), 500
+    finally:
+        session.end_session()
+
+@token_required
+def unarchive_course(course_id):
+    session = mongo_client.start_session()
+    try:
+        with session.start_transaction():
+            user_data = current_user.get()
+            user = profile.find_one({'email': user_data['email']}, session=session)
+            course_id = ObjectId(course_id)
+            if course_id not in user.get('archived_courses', []):
+                return jsonify({'message': 'Course not archived'}), 400
+            profile.update_one(
+                {'email': user_data['email']}, 
+                {
+                    '$pull': {
+                        'archived_courses': course_id
+                    },
+                    '$addToSet': {
+                        'courses': course_id
+                    }
+                },
+                session=session
+            )
+            return jsonify({'message': 'Course unarchived successfully'}), 200
+    except Exception as e:
+        current_app.logger.error("Error during unarchiving course: %s", e)
+        return jsonify({'message': 'Internal Server Error'}), 500   
+    finally:
+        session.end_session()
+    
 
 

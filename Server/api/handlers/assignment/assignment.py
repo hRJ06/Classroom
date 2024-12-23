@@ -1,5 +1,6 @@
 from flask import jsonify, request, current_app
-from api.handlers.utils.utils import token_required, role_instructor, upload_file_to_cloudinary
+from api.handlers.utils.utils import token_required, role_instructor, role_student, upload_file_to_cloudinary
+from api.handlers.submission.submission import create_submission
 from extensions import course, current_user, profile, assignment, mongo_client
 from bson import ObjectId
 
@@ -64,4 +65,14 @@ def get_assignment(course_id):
         return jsonify({'assignments': list(assignments)}), 200
     except Exception as e:
         current_app.logger.error("Error during getting assignment: %s", e)
+        return jsonify({'message': 'Internal Server Error'}), 500
+    
+@token_required
+@role_student
+def add_submission(assignment_id):
+    try:
+        create_submission()
+        return jsonify({'message': 'Submission successfully added'}), 200
+    except Exception as e:
+        current_app.logger.error("Error during adding submission: %s", e)
         return jsonify({'message': 'Internal Server Error'}), 500
