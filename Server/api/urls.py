@@ -1,7 +1,7 @@
 from api.handlers.auth.auth import home, signup, login, get_profile
 from api.handlers.course.course import create_course, get_course, get_course_course_by_id, enroll_course, unenroll_course, archive_course, unarchive_course
 from api.handlers.assignment.assignment import create_assignment, get_assignment, add_submission
-from api.handlers.submission.submission import delete_submission
+from api.handlers.submission.submission import delete_submission, grade_submission
 from api.handlers.announcement.announcement import create_announcement, get_announcement
 def register_routes(app):
     # Authentication
@@ -26,3 +26,4 @@ def register_routes(app):
     app.add_url_rule('/announcement/get-announcement/<course_id>', 'get_announcement', get_announcement, methods=['GET'])
     # Submission
     app.add_url_rule('/submission/delete-submission/<submission_id>', 'delete_submission', delete_submission, methods=['DELETE'])
+    app.add_url_rule('/submission/grade-submission/<submission_id>', 'grade_submission', grade_submission, methods=['PUT'])

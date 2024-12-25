@@ -27,6 +27,8 @@ def create_assignment(course_id):
             if data:
                 name = data['name']
                 description = data['description']
+                graded = data['graded']
+                marks = data['marks']
                 deadline = data['deadline']
                 if not name or not description or not deadline:
                     return jsonify({'message': 'Please provide all details'}), 400
@@ -36,6 +38,8 @@ def create_assignment(course_id):
                     'due_date': deadline,
                     'files': uploaded_files,
                     'course_id': course_data['_id'],
+                    'graded' : True if graded == 'true' else False,
+                    'full_marks': marks,
                 }
                 saved_assignment = assignment.insert_one(mongo_assignment, session=session)
                 course.update_one({'_id': course_data['_id']}, {'$addToSet': {'assignments': saved_assignment.inserted_id}}, session=session)
