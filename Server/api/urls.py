@@ -20,7 +20,7 @@ def register_routes(app):
     # Assignment
     app.add_url_rule('/assignment/create-assignment/<course_id>', 'create_assignment', create_assignment, methods=['POST'])
     app.add_url_rule('/assignment/get-assignment/<course_id>', 'get_assignment', get_assignment, methods=['GET'])
-    app.add_url_rule('assignment/add-submission/<assignment_id>', 'add_submission', add_submission, methods=['POST'])
+    app.add_url_rule('/assignment/add-submission/<assignment_id>', 'add_submission', add_submission, methods=['POST'])
     # Announcement
     app.add_url_rule('/announcement/create-announcement/<course_id>', 'create_announcement', create_announcement, methods=['POST'])
     app.add_url_rule('/announcement/get-announcement/<course_id>', 'get_announcement', get_announcement, methods=['GET'])
