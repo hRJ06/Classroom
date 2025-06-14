@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: google-classroom-application
+  labels:
+    name: google-classroom-application
+    environment: production
+

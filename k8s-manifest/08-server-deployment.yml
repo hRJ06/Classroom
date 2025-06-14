@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: google-classroom-server-deployment
+  namespace: google-classroom-application
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: google-classroom-server
+  template:
+    metadata:
+      labels:
+        app: google-classroom-server
+    spec:
+      containers:
+        - name: google-classroom-server
+          image: hrj06/google-classroom-server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: google-classroom-secret
+                  key: SECRET_KEY
+
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: google-classroom-secret
+                  key: JWT_SECRET_KEY
+
+            - name: CLOUDINARY_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: google-classroom-secret
+                  key: CLOUDINARY_NAME
+
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: google-classroom-secret
+                  key: CLOUDINARY_API_KEY
+
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: google-classroom-secret
+                  key: CLOUDINARY_API_SECRET
+
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: google-classroom-secret
+                  key: MONGODB_URI
+            
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          startupProbe:
+            httpGet:
+              path: /
+              port: 5000
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 25
+            periodSeconds: 20

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: google-classroom-configuration
+  namespace: google-classroom-application
+data:
+  MONGODB_INIT_DB: google-classroom-db
+  MONGODB_ROOT_USERNAME: root
