@@ -10,3 +10,4 @@ spec:
   hostPath:
     path: /data/db
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
