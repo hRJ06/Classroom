@@ -4,6 +4,8 @@ services:
       context: ./Server
       dockerfile: Dockerfile
     container_name: flask_app
+    networks:
+      - flask-monitor
     ports:
       - "5000:5000"
     env_file:
@@ -15,12 +17,15 @@ services:
     image: mongo:6.0
     container_name: mongo_db
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGODB_INIT_DB}
+    env_file:
+      - .env.mongo
     volumes:
       - mongo_data:/data/db
+    networks:
+      - flask-monitor
 
 volumes:
   mongo_data:
+
+networks:
+  flask-monitor:
